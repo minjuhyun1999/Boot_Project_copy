@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<!--순서1
+: 타임리프 메타 태그 설정 -->
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="www.thymeleaf.org"
+      layout:decorate="~{layout/basic.html}"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>read화면</title>
+</head>
+<!--순서2, basic.html 템플릿을 사용중이고, -->
+<!--우리는, layout:fragment="content" 여기에,read.html 내용이 들어감-->
+<div layout:fragment="content">
+    <!--        여기 부분이, basic.html의 layout:fragment="content" 영역에-->
+    <!--        표기 되는 부분-->
+    <!--        register.html 의 내용을 재사용.-->
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Board Read
+                </div>
+                <div class="card-body">
+                    <!--                        폼 형식 작성하기-->
+                    <form method="post" action="/board/update">
+                        <div class="mb-3">
+                            <label for="bno" class="form-control">bno</label>
+                            <input type="text" class="form-control" id="bno" name="bno"
+                                   th:value="${dto.bno}" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="title" class="form-control">제목</label>
+                            <input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력해주세요"
+                                   th:value="${dto.title}" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="content" class="form-control">내용</label>
+                            <textarea type="text" class="form-control col-sm-5" id="content"
+                                      name="content" rows="5" placeholder="내용을 입력해주세요"
+                                      readonly
+                            >[[${dto.content}]]</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="writer" class="form-control">작성자</label>
+                            <input type="text" class="form-control" id="writer" name="writer"
+                                   placeholder="지금은 직접 작성자를 입력해주세요, 로그인 후 로그인 유저가 자동으로 탑재됨."
+                                   th:value="${dto.writer}" readonly
+                            >
+                        </div>
+                        <!--                            등록시간과, 수정시간 표기해보기-->
+                        <div class="mb-3">
+                            <label for="regDate" class="form-control">등록시간</label>
+                            <input type="text" class="form-control" id="regDate" name="regDate"
+                                   th:value="${#temporals.format(dto.regDate,'yyyy-MM-dd HH:mm:ss')}" readonly
+                            >
+                        </div>
+                        <div class="mb-3">
+                            <label for="modDate" class="form-control">수정시간</label>
+                            <input type="text" class="form-control" id="modDate" name="modDate"
+                                   th:value="${#temporals.format(dto.modDate,'yyyy-MM-dd HH:mm:ss')}" readonly
+                            >
+                        </div>
+
+                        <div class="mb-3" th:with="link = ${pageRequestDTO.link}">
+                            <!--                           예시 url
+                                                            http://localhost:8080/board/update
+                                                            ?bno=12
+                                                            &page=1&keyword=1&type=twc-->
+
+                            <a th:href="|@{/board/update}?bno=${dto.bno}&${link}|">
+                                <button type="button" class="btn btn-primary ">수정하기</button>
+                            </a>
+                            <a th:href="|@{/board/list}?${link}|">
+                                <button type="button" class="btn btn-secondary">목록가기</button>
+                            </a>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div> <!--    end row-->
+    <!--    댓글 작성 폼 화면-->
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <div class="my-4">
+                <button class="btn btn-info addReplyBtn">댓글 작성</button>
+            </div>
+
+            <!--    댓글 목록 화면-->
+            <ul class="list-group replyList">
+<!--                자바스크립트 이용해서, 태그를 동적으로 주입 합니다.-->
+            </ul>
+        </div>
+
+    </div>
+    <!--    댓글 페이징 화면-->
+    <div class="row mt-3">
+        <div class="col">
+            <!--            <ul class="pagination replyPaging">-->
+            <ul class="pagination flex-wrap justify-content-center replyPaging">
+<!--                자바스크립트 이용해서, 태그를 동적으로 주입 합니다.-->
+            </ul>
+        </div>
+    </div>
+
+    <!--    댓글 작성하는 모달 폼 창, list.html에 있는 테스트 모달창 가져오기-->
+    <!--    모달창 테스트-->
+    <div class="modal registerModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">댓글 작성폼</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">
+                            댓글 내용
+                        </span>
+                        <input type="text" class="form-control replyText">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">
+                            작성자
+                        </span>
+                        <input type="text" class="form-control replyer">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary registerBtn">등록하기</button>
+                    <button type="button" class="btn btn-secondary closeRegBtn" data-bs-dismiss="modal">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--    모달창 테스트-->
+    <!--    댓글 작성하는 모달 폼 창-->
+
+    <!--    댓글 수정하는 모달 폼 창, -->
+    <!--    모달창 테스트-->
+    <div class="modal modifyModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title replyHeader">댓글 수정폼</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">
+                            댓글 내용
+                        </span>
+                        <input type="text" class="form-control modifyText">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">
+                            작성자
+                        </span>
+                        <input type="text" class="form-control modifyReplyer">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary modifyBtn">수정하기</button>
+                    <button type="button" class="btn btn-danger removeBtn">삭제하기</button>
+                    <button type="button" class="btn btn-secondary closeModifyBtn" data-bs-dismiss="modal">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--    모달창 테스트-->
+    <!--    댓글 수정하는 모달 폼 창-->
+
+    <!--     비동기 통신 하기 위한 도구 설정, axios,-->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!--    우리가 만든 자바스크립 파일, 임포트 : 불러오기-->
+    <script src="/js/reply.js"></script>
+
+</div> <!--fragment content end-->
+<script layout:fragment="script" th:inline="javascript">
+    const bno = [[${dto.bno}]]
+
+    const replyList = document.querySelector('.replyList')// 댓글 목록 가리킴
+    const replyPaging = document.querySelector('.replyPaging') // 댓글의 페이징 가리킴
+
+    // 댓글 목록 출력 함수.  UI 작성,
+    // 자바스크립트로 이너 HTML 이용해서, 문자열로, 태그를 생성해서 주입할 예정.
+    // dtoList, 서버로부터 전달 받은 , 댓글 데이터들.
+    function printList(dtoList) {
+        let str = '';
+        if (dtoList && dtoList.length > 0) {
+            for (const dto of dtoList) {
+                // str 문자열 변수 안에, li 태그를 문자열 형태로 주입함.
+                str += `
+                        <li class="list-group-item d-flex replyItem">
+                        <span class="col-2">${dto.rno}</span>
+                        <span class="col-6" data-rno="${dto.rno}">${dto.replyText}</span>
+                        <span class="col-2">${dto.replyer}</span>
+                        <span class="col-2">${dto.regDate}</span>
+                        </li>
+                `
+            } //end for
+        } // end if
+        replyList.innerHTML = str
+    } // printList end
+
+    // 2 댓글 페이징 화면 출력 함수.  UI 작성,
+    // 자바스크립트로 이너 HTML 이용해서, 문자열로, 태그를 생성해서 주입할 예정.
+    function printPages(data) {
+        let pageStr = ``
+
+        if (data.prev) {
+            pageStr += `
+        <li class="page-item"><a class="page-link" data-page="${data.start - 1}">Prev</a></li>
+            `
+        }
+
+        // 페이징 1,2,3,4,5,6,7,8,9,10 출력.
+        for (let i = data.start; i <= data.end; i++) {
+            pageStr += `
+            <li class="page-item ${i == data.page ? "active" : ""}"><a class="page-link" data-page="${i}">${i}</a></li>
+            `
+        }
+
+        if (data.next) {
+            pageStr += `
+        <li class="page-item"><a class="page-link" data-page="${data.end + 1}">Next</a></li>
+            `
+        }
+        replyPaging.innerHTML = pageStr
+    }
+
+
+    // 서버로부터, 페이징 처리가 된 댓글의 내용을 받는 함수.
+    // 적용하기.
+    // 1) 목록 출력하는 UI 작성하는 함수에 적용
+    // 2) 목록 페이징을 출력하는 UI 작성하는 함수에 적용
+    function printReplies(page, size, goLast) {
+        //reply.js 에서 정의한, getList 함수를 사용해서, 비동기적으로 데이터를 전달 받기.
+        getList({bno, page, size, goLast}).then(
+            // 처음에는 , 데이터 받느지 유무를 확인하기위해서, 콘솔에 출력
+            // 두번째, 실제 화면에 적용하기.
+            // data => {console.log(data)}
+            data => {
+                printList(data.dtoList) // 댓글 목록 출력
+                printPages(data) // 댓글 페이징 출력
+            }
+        ).catch(e => {
+            console.error(e)
+        })
+    }
+
+    // 함수 호출해보기
+    // 댓글의 첫페이지 이동
+    // printReplies(1,10)
+
+    // 댓글의 마지막 페이지 이동
+    printReplies(1, 10, true)
+
+
+
+    // 댓글 등록 모달 작업.
+    const registerModal = new bootstrap.Modal(document.querySelector(".registerModal"))
+
+    // 나머지, UI 요소 선택자 지정 해놓기.
+    const registerBtn = document.querySelector(".registerBtn")
+    const replyText = document.querySelector(".replyText")
+    const replyer = document.querySelector(".replyer")
+    const closeRegBtn = document.querySelector(".closeRegBtn")
+
+    // 이벤트 처리 작업들.
+    document.querySelector(".addReplyBtn").addEventListener("click", function (e) {
+        registerModal.show()
+    },false)
+
+    closeRegBtn.addEventListener("click", function (e) {
+        registerModal.hide()
+    },false)
+
+    // 댓글의 내용을 담아서, 서버에 전달하기.
+    registerBtn.addEventListener("click", function (e) {
+        const replyObj = {
+            bno : bno,
+            replyText : replyText.value,
+            replyer : replyer.value
+        }
+        // 비동기 처리, reply.js 에서, addReply 이용하기.
+        addReply(replyObj).then(result => {
+            alert(result.rno)
+            registerModal.hide()
+            replyText.value = ""
+            replyer.value = ""
+            // 댓글 작성 후, 맨 마지막 페이지 이동.
+            printReplies(1,10, true)
+        }).catch(e => {
+            alert("예외가 발생했습니다.")
+        })
+    },false)
+
+
+    // 수정하는 요소 선택 및, 이벤트 처리 작업.
+    const modifyModal = new bootstrap.Modal(document.querySelector(".modifyModal"))
+
+    const replyHeader = document.querySelector(".replyHeader")
+    const modifyText = document.querySelector(".modifyText")
+    const modifyReplyer = document.querySelector(".modifyReplyer")
+    const modifyBtn = document.querySelector(".modifyBtn")
+    const removeBtn = document.querySelector(".removeBtn")
+    const closeModifyBtn = document.querySelector(".closeModifyBtn")
+
+
+    // 댓글 목록에서, 댓글 클릭시, 댓글 상세보기 화면 이동 이벤트 작업.
+    replyList.addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        const target = e.target
+
+        if(!target || target.tagName != 'SPAN') {
+            return
+        }
+
+        // rno 부분 정의하기.
+        const rno = target.getAttribute("data-rno")
+
+        if(!rno) {
+            return;
+        }
+
+        // reply.js 에 있는 함수 이용. getReply
+        getReply(rno).then(reply => {
+            // 서버로부터, 댓글 하나 조회 후, 모달창에 데이터 출력하기
+            console.log(reply)
+            replyHeader.innerHTML = reply.rno
+            modifyText.value = reply.replyText
+            modifyReplyer.value = reply.replyer
+            modifyModal.show()
+
+        }).catch(e => alert("예외 발생."))
+    })
+
+
+
+    // 댓글 페이지 번호 클릭시 이동 이벤트 작업.
+    let page = 1
+    let size = 10
+    replyPaging.addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        const target = e.target
+
+        if(!target || target.tagName != 'A') {
+            return
+        }
+        const pageNum = target.getAttribute("data-page")
+        page = pageNum
+        printReplies(page,size)
+    },false)
+
+
+    // 댓글 수정해보기. 이벤트 리스너 작업,
+    // 댓글 등록 과정과 비슷해서, 구조를 복사하고 수정하기.
+    // 댓글의 내용을 담아서, 서버에 전달하기.
+    modifyBtn.addEventListener("click", function (e) {
+        const replyObj = {
+            bno : bno,
+            rno : replyHeader.innerHTML,
+            replyText : modifyText.value,
+            replyer : modifyReplyer.value // 임시로 연습용으로함, 나중에 변경 예정.
+        }
+        // 비동기 처리, reply.js 에서, modifyReply 이용하기.
+        modifyReply(replyObj).then(result => {
+            alert(result.rno + "댓글 수정 완료")
+            modifyModal.hide()
+            modifyText.value = ""
+            modifyReplyer.value = ""
+            // 댓글 수정 후, 맨 마지막 페이지 이동.
+            printReplies(page,size)
+        }).catch(e => {
+            alert("예외가 발생했습니다.")
+        })
+    },false)
+
+    // 수정 모달창 닫기.
+    closeModifyBtn.addEventListener("click", function (e) {
+        modifyModal.hide()
+    },false)
+
+
+    // 삭제 이벤트 리스너 추가하기. 위에 있는 수정 리스너를 재사용.
+    // removeBtn
+    removeBtn.addEventListener("click", function (e) {
+
+        // 비동기 처리, reply.js 에서, removeReply 이용하기.
+        // 모달창 헤더 부분에, 댓글의 번호 rno 있음.
+        removeReply(replyHeader.innerHTML).then(result => {
+            alert(result.rno + "댓글 삭제 완료")
+            modifyModal.hide()
+            modifyText.value = ""
+            modifyReplyer.value = ""
+            // 댓글 삭제 후, 맨 첫 페이지 이동.
+            page = 1
+            printReplies(page,size)
+        }).catch(e => {
+            alert("예외가 발생했습니다.")
+        })
+    },false)
+
+    // 참고하기.
+    // console.log(get1(bno))
+    // reply.js 에서, Promise 형태로 데이터를 받고서,
+    //     then, 절과, catch 절을 이용 가능.
+    //     포맷 형태를 좀더 직관적이고, 쉽게 비동기를 동기적 스타일로 표현이 가능함.
+    // get1(bno) : 순서1, 서버로부터 데이터 받기
+    // .then( ) 절 : 순서2, 받은 데이터로 작업하기.
+    // .catch() 절 : 순서3, 오류가 발생시 동작하는 블록.
+    // get1(bno).then(
+    //     data => {
+    //         console.log(data)
+    //     }
+    // ).catch(e => {
+    //     console.error(e)
+    // })
+</script>
+
+
+</html>

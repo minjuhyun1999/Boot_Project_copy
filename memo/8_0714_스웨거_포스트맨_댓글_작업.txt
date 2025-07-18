@@ -1,0 +1,28 @@
+
+1 . 스웨거는
+http://localhost:8080/swagger-ui/index.html
+
+2.
+Request body 항목에 아래의 내용 추가
+{
+  "bno": 104,
+  "replyText": "새 댓글 테스트 스웨거 확인",
+  "replyer": "이상용"
+
+}
+
+3. 포스트 맨은
+
+메서드 : post
+http://localhost:8080/replies/
+Body 탭 -> raw 탭 -> 오른쪽 끝에 JSON 확인 후,
+내용:
+{
+  "bno": 107,
+  "replyText": "새 댓글 테스트 스웨거 확인",
+  "replyer": "이상용"
+
+}
+
+4. 주의사항,
+실제 디비에 있는 내용인지 확인 해야함.

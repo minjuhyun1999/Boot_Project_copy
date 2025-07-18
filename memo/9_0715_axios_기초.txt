@@ -1,0 +1,51 @@
+Axios는 JavaScript에서 HTTP 통신을 쉽게 할 수 있도록
+도와주는 Promise 기반의 HTTP 클라이언트 라이브러리입니다.
+
+주로 웹 브라우저와 Node.js 환경 모두에서 사용할 수 있습니다.
+
+### Axios 주요 개념 소개
+
+1. **HTTP 요청/응답 처리**
+   - Axios는 GET, POST, PUT, DELETE 등 다양한 HTTP 메서드를 이용해 API 요청을 보낼 수 있습니다.
+   - 요청 시 자동으로 JSON 데이터 변환 및 직렬화/역직렬화 처리를 해줍니다.
+
+2. **Promise 기반**
+   - Axios는 비동기 처리를 위해 Promise를 활용합니다.
+   그래서 then, catch 체이닝을 이용해
+   코드 작성이 간편하며
+   async/await 문법과도 잘 어울립니다.
+
+3. **요청 및 응답 인터셉터(Interceptor)**
+   - 요청을 보내기 전이나 응답을 받은 후,
+   중간에서 가로채어 데이터를 가공하거나 공통 처리를 할 수 있습니다.
+   (예: 토큰 추가, 에러 공통 처리 등)
+
+4. **자동 변환 및 간편한 설정**
+   - 요청/응답 데이터를 자동으로 JSON 등으로 변환합니다.
+   - 기본 헤더, 타임아웃, baseURL 등 공통 옵션을 쉽게 설정할 수 있습니다.
+
+5. **에러 처리**
+   - HTTP 상태코드에 따라 에러를 catch 문에서 받아 처리할 수 있습니다.
+
+### 간단한 예제
+
+```javascript
+import axios from 'axios';
+
+axios.get('https://api.example.com/data')
+  .then(response => {
+    console.log(response.data); // 서버에서 받은 데이터
+  })
+  .catch(error => {
+    console.error(error); // 에러 처리
+  });
+```
+
+### 주요 사용처
+- REST API 호출
+- 서버와의 데이터 송수신
+- 프론트엔드와 백엔드 연동
+
+### 요약
+Axios는 HTTP 통신을 쉽게, 효율적으로 처리하기 위한 JavaScript 라이브러리로,
+Promise 기반 구조, 데이터 자동 변환, 인터셉터, 에러 처리 등 다양한 편의 기능을 제공합니다.

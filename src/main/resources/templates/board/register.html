@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="www.thymeleaf.org"
+      layout:decorate="~{layout/basic.html}"
+        lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Board Register</title>
+</head>
+    <div layout:fragment="content">
+        <div class="row mt-3">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        Board Register
+                    </div>
+                    <div class="card-body">
+<!--                        폼 형식 작성하기-->
+                        <form method="post" action="/board/register">
+                            <div class="mb-3">
+                                <label for="title" class="form-control">제목</label>
+                                <input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력해주세요">
+                            </div>
+                            <div class="mb-3">
+                                <label for="content" class="form-control">내용</label>
+                                <textarea type="text" class="form-control col-sm-5" id="content"
+                                          name="content" rows="5" placeholder="내용을 입력해주세요"></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="writer" class="form-control">작성자</label>
+                                <input type="text" class="form-control" id="writer" name="writer" placeholder="지금은 직접 작성자를 입력해주세요, 로그인 후 로그인 유저가 자동으로 탑재됨.">
+                            </div>
+
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary submitBtn">작성</button>
+                                <button type="reset" class="btn btn-danger">초기화</button>
+                            </div>
+
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+<script layout:fragment="script" th:inline="javascript">
+    const errors = [[${errors}]]
+    console.log(errors)
+    let errorMsg = ''
+    if(errors) {
+        for(let i = 0; i < errors.length; i++) {
+            errorMsg += `${errors[i].field}는 ${errors[i].code} \n`
+        }
+        alert(errorMsg)
+    }
+</script>
+
+
+</html>

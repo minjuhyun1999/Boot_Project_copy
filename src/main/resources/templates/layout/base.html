@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Base Layout</title>
+    </head>
+    <body>
+        <div>
+            <h3>공통 출력, 샘플 레이아웃 헤더</h3>
+        </div>
+        <h2>공통 출력, 여기 layout:fragment="content" 된 부분만 변경이 됨. </h2>
+        <div layout:fragment="content">
+            <p>샘플 페이지 콘텐츠 영역(동적으로 변경)</p>
+        </div>
+        <div>
+            <h3>공통 출력, 샘플 푸터 영역</h3>
+        </div>
+<!--        공통으로 사용할 자바스크립 코드 영역-->
+<!--        동적으로 변경된 화면에서 사용하는 자바 스크립트 코드가 여기서 동작을 함-->
+        <th:block layout:fragment="script">
+
+        </th:block>
+
+    </body>
+</html>

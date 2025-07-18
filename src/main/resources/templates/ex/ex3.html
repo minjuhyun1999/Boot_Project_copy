@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="www.thymeleaf.org"
+      layout:decorate="~{layout/base.html}"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ex3화면</title>
+</head>
+<body>
+<!--현제 ex3 파일에서, 사용할 콘텐츠 내용이 베이스 레이아웃의-->
+<!--layout:fragment="content" , 영역에 표기되고-->
+<div layout:fragment="content">
+    <h1>ex3.html 화면 파일입니다.</h1>
+</div>
+<!--자바스크립트 코드도 베이스 layout 에서 ,-->
+<!--layout:fragment="script" 영역에 표기가 됨-->
+<script layout:fragment="script" th:inline="javascript">
+    const list = [[${list}]]
+    console.log("list : " + list)
+</script>
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>ex1 연습용, 서버로부터 전달 받은 데이터 사용 예</h1>
+<h2>바로 사용하기. </h2>
+<h3>장점, [[...]] , js 블록내에서도 사용가능함,
+    html 이스케이프 처리가 되어서 안전함.</h3>
+<!--/*    타임리프 주석 , 확인
+html 에서 기본 , ctrl + / 로 만  주석 처리 하면,
+슬래시 별 별 슬래시, 이걸로 꼭 주석 처리 해야함.
+<h3>[[${list}]]</h3>
+   */-->
+<h3>[[${list}]]</h3>
+
+<h3>인라인 표현법, body 가 덮어 쒸어짐,
+    js 블록내에서 사용 불가.
+    html 이스케이프 처리가 되어서 안전함</h3>
+<!--/* <h3 th:text="${list}"></h3>
+*/-->
+<h3 th:text="${list}"></h3>
+
+<h1>ex2 주석, 결론, 타임리프 주석으로 꼭 처리해야, 문법 오류가 발생을 안함.
+    일반적 ctrl + / 로 만 하면 안되고, 꼭 슬래시 별 별 슬래시 추가</h1>
+
+<h2>ex3 th:with 키워드 사용해서 변수 선언 및 이용하기</h2>
+<div th:with="num1 = ${100}, num2= ${200}">
+    <h3 th:text="${num1 + num2}"></h3>
+</div>
+
+<h2>ex4-1, 인라인 , 타임리프 이용해서 반복문 처리하기. </h2>
+<ul>
+    <li th:each="str : ${list}" th:text="${str}">
+
+    </li>
+</ul>
+
+<h2>ex4-2, 블록 , 타임리프 이용해서 반복문 처리하기. </h2>
+<ul>
+    <th:block th:each="str : ${list}">
+        <li>
+            [[${str}]]
+        </li>
+    </th:block>
+</ul>
+<h2>ex4-3, status 변수 이용 , 타임리프 이용해서 반복문 처리하기. </h2>
+<ul>
+    <li th:each="str,status : ${list}">
+        status.index : [[${status.index}]] -- [[${str}]]
+    </li>
+</ul>
+
+<h2>ex5-1, 조건문 if,unless , 타임리프 이용해서 조건문 처리하기. </h2>
+<ul>
+    <li th:each="str , status: ${list}">
+        <span th:if="${status.odd}">
+            status.index : [[${status.index}]],
+            status.odd : [[${status.odd}]],
+            status.even : [[${status.even}]],
+            홀수  [[${str}]]</span>
+        <span th:unless="${status.odd}">
+            status.index : [[${status.index}]],
+            status.odd : [[${status.odd}]],
+            status.even : [[${status.even}]],
+            짝수  [[${str}]]</span>
+    </li>
+</ul>
+
+<h2>ex5-2, 삼항연산자 , 타임리프 이용해서 조건문 처리하기. </h2>
+<ul>
+    <li th:each="str , status: ${list}">
+        <span th:text="${status.odd} ? '홀수---'+${str} : '짝수---'+${str}"> </span>
+    </li>
+</ul>
+
+<h2>ex5-3, 스위치 문법 , 타임리프 이용해서 조건문 처리하기. </h2>
+<ul>
+    <li th:each="str , status: ${list}" >
+        <th:block th:switch="${status.index % 3}">
+            <span th:case="0"> index:0  [[${str}]]</span>
+            <span th:case="1"> index:1  [[${str}]]</span>
+            <span th:case="2"> index:2  [[${str}]]</span>
+        </th:block>
+    </li>
+</ul>
+
+<h2>ex6, 링크처리 </h2>
+<a th:href="@{/hello}">연습용 /hello 가기 </a>
+
+<h2>ex6-2, 링크처리, ? 달고, 쿼리스트링으로 데이터 전달 예시 </h2>
+<a th:href="@{/hello(name='이상용',age=30)}">연습용 /hello 가기쿼리스트링 </a>
+
+<h2>ex6-3, 링크처리, ? 달고, 쿼리스트링으로 데이터 전달 예시, 배열로 여러개 전달 </h2>
+<a th:href="@{/hello(types=${ {'이상용1','이상용2'} }, age = 16)}">연습용 /hello 가기쿼리스트링 </a>
+</body>
+</html>

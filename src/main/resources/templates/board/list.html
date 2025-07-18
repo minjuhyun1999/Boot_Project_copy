@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="www.thymeleaf.org"
+      layout:decorate="~{layout/basic.html}"
+      lang="en"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>list화면</title>
+</head>
+
+<div layout:fragment="content">
+
+    <!--    검색 화면 추가-->
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                   <h5 class="card-title">검색 및 필터</h5>
+                    <form action="/board/list" method="get">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <select class="form-select" name="type">
+                                    <option value="">
+                                        -----------
+                                    </option>
+                                    <option value="t" th:selected="${pageRequestDTO.type == 't'}">
+                                        제목
+                                    </option>
+                                    <option value="c" th:selected="${pageRequestDTO.type == 'c'}">
+                                        내용
+                                    </option>
+                                    <option value="tc" th:selected="${pageRequestDTO.type == 'tc'}">
+                                        제목 + 내용
+                                    </option>
+                                    <option value="tcw" th:selected="${pageRequestDTO.type == 'tcw'}">
+                                        제목 + 내용 + 작성자
+                                    </option>
+                                </select>
+                            </div>
+<!--                            검색 키워드 입력창-->
+                            <input type="text" class="form-control" name="keyword"
+                            th:value="${pageRequestDTO.keyword}">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="float-end">
+                                <button class="btn btn-primary" type="submit">검색</button>
+                                <button class="btn btn-secondary" type="reset">초기화</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!--    검색 화면 추가-->
+
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Board List
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        Board List
+                    </h5>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Bno</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Writer</th>
+                            <th scope="col">RegDate</th>
+                        </tr>
+                        </thead>
+                        <tbody th:with="link = ${pageRequestDTO.link}">
+                        <tr th:each="dto: ${responseDTO.dtoList}">
+                            <th scope="row">[[${dto.bno}]]</th>
+                            <td>
+                                <a th:href="|@{/board/read(bno = ${dto.bno})}&${link}|">
+                                [[${dto.title}]]
+                                </a>
+<!--                                서버로부터 전달받은 데이터 내용중에서, 댓글 갯수 표기-->
+                                <span class="badge progress-bar-success" style="background-color: #fe010a">
+                                    [[${dto.replyCount}]]
+                                </span>
+                            </td>
+                            <td>
+                                [[${dto.writer}]]
+                            </td>
+                            <td>
+                                [[${#temporals.format(dto.regDate,'yyyy-MM-dd HH:mm:ss')}]]
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <!--                    페이지네이션 번호 화면-->
+                    <div>
+                        <ul class="pagination flex-wrap justify-content-center">
+                            <!--                            이전 링크-->
+                            <li class="page-item" th:if="${responseDTO.prev}">
+                                <a class="page-link" th:data-num="${responseDTO.start - 1}">
+                                    Previous
+                                </a>
+                            </li>
+                            <!--                            페이지 번호 출력 10개-->
+                            <th:block th:each="i : ${#numbers.sequence(responseDTO.start, responseDTO.end)}">
+                                <li th:class="${responseDTO.page == i} ? 'page-item active' : 'page-item'">
+                                    <a class="page-link" th:data-num="${i}">
+                                        [[${i}]]
+                                    </a>
+                                </li>
+                            </th:block>
+                            <!--                            다음 링크-->
+                            <li class="page-item" th:if="${responseDTO.next}">
+                                <a class="page-link" th:data-num="${responseDTO.end + 1}">
+                                    Next
+                                </a>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <!--                    페이지네이션 번호 화면-->
+
+                </div><!--                end card body-->
+            </div><!--end card-->
+        </div><!--end col-->
+    </div><!--    end row-->
+
+<!--    모달창 테스트-->
+    <div class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Modal body text goes here.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--    모달창 테스트-->
+</div>
+<script layout:fragment="script" th:inline="javascript">
+    console.log("list.html의 자바스크립트 영역입니다.")
+    document.querySelector(".pagination").addEventListener("click",function (e){
+        e.preventDefault()
+        e.stopPropagation()
+
+        const target = e.target
+        // a 태그 아니면 , 이벤트 처리 안한다., -> a 태그만 이벤트처리 한다.
+        if(target.tagName !== 'A') {
+            return
+        }
+        const num = target.getAttribute("data-num")
+        const formObj = document.querySelector("form")
+        formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
+        formObj.submit();
+    }, false)
+
+
+    const result = [[${result}]]
+    // if(result) {
+    //     alert("글작성 완료 : " + result)
+    // }
+
+    // 모달창 이용해보기.
+    const modal = new bootstrap.Modal(document.querySelector(".modal"))
+    if (result) {
+        modal.show()
+    }
+
+</script>
+
+</html>
