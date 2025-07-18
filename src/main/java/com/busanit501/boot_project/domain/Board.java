@@ -2,6 +2,7 @@ package com.busanit501.boot_project.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,9 +26,12 @@ public class Board extends BaseEntity {
 
     //연관관계 설정1,
     @OneToMany(mappedBy = "board", cascade = {CascadeType.ALL}
-    ,fetch = FetchType.LAZY,
-    orphanRemoval = true) // BoardImage 의 board 변수를 가리킴
+            ,fetch = FetchType.LAZY,
+            orphanRemoval = true) // BoardImage 의 board 변수를 가리킴
     @Builder.Default
+    // 기존에 N+1, 게시글 1개 조회 할 때마다, 첨부된 이미지 N 번을 select 조회를 하니, 디비서버가 힘들어요
+    // 그래서, 모아서 처리하자. 20개씩.
+    @BatchSize(size = 20) // 한번 조회 할 때, 20 개만큼 씩 모아서 조회를 하자.
     private Set<BoardImage>  imageSet = new HashSet<>();
 
     public void addImage(String uuid, String fileName) {

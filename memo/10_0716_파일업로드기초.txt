@@ -5,6 +5,7 @@ application.properties 에서 관련 설정만 하면됨.
 # 관리자가 관리하는 상품, 여행지, 카페메뉴, 동물사진, static 하위에 이미지 폴더
 spring.servlet.multipart.enabled=true
 # 프로젝트시, 사용자가 업로드한 경로
+# 배포시에는 , aws 기준으로 s3 버킷, 미디어 서버를 주로 이용함.
 spring.servlet.multipart.location=c:\\upload\\springTest
 spring.servlet.multipart.max-request-size=100MB
 spring.servlet.multipart.max-file-size=100MB

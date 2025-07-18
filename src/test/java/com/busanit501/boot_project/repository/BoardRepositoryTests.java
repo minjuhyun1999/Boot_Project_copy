@@ -232,10 +232,10 @@ public class BoardRepositoryTests {
         // 스프링에서, 고아 객체, 가비지 컬렉션이 알아서 자동 수거 하게 하면 됨.
 
         // 실제 각자 디비에 있는 더미 데이터로 확인 .
-       Optional<Board> result =  boardRepository.findByIdWithImages(113L);
-       Board board = result.orElseThrow();
+        Optional<Board> result =  boardRepository.findByIdWithImages(113L);
+        Board board = result.orElseThrow();
 
-       // 기존 보드에 첨부된 이미지를 , 클리어 하고,
+        // 기존 보드에 첨부된 이미지를 , 클리어 하고,
         board.clearImages();
 
         // 새로운 첨부 이미지들로 교체
@@ -254,5 +254,36 @@ public class BoardRepositoryTests {
         replyRepository.deleteByBoard_Bno(113L);
         boardRepository.deleteById(113L);
     }
+
+    @Test
+    public void testInsertAll() {
+        for(int i = 1; i <= 100; i++) {
+            Board board = Board.builder()
+                    .title("제목... " + i)
+                    .content("내용... " +i)
+                    .writer("사용자..." + i)
+                    .build();
+            // 1게시글 당, 첨부 이미지 3장씩 더미로 작성
+            //
+            for (int j = 0; j < 3; j++) {
+                if(i % 5 == 0) {
+                    continue;
+                } //end if
+                board.addImage(UUID.randomUUID().toString(),i+ "file"+j+".jpg");
+            } // 안쪽 end for
+            boardRepository.save(board);
+        }// 바깥쪽 end for
+    }
+
+    // 조회시 : 1)페이징 정보 2) 검색 정보 3) 댓글 갯수 정보 4) 첨부 이미지 정보 포함해서
+    // 레포지토리 목록 조회 확인 테스트.
+    @Transactional
+    @Test
+    public void testSearchImageReplyCount() {
+        // 조회시 필요한 더미 데이터 준비물 1) 페이징 정보 2) 검색 정보
+        Pageable pageable = PageRequest.of(0,10, Sort.by("bno").descending());
+        boardRepository.searchWithAll(null,null,pageable);
+    }
+
 
 }

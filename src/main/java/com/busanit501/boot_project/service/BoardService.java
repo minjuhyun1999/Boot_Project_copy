@@ -1,9 +1,6 @@
 package com.busanit501.boot_project.service;
 
-import com.busanit501.boot_project.dto.BoardDTO;
-import com.busanit501.boot_project.dto.BoardListReplyCountDTO;
-import com.busanit501.boot_project.dto.PageRequestDTO;
-import com.busanit501.boot_project.dto.PageResponseDTO;
+import com.busanit501.boot_project.dto.*;
 
 public interface BoardService {
 
@@ -20,5 +17,8 @@ public interface BoardService {
 
     // 기존 , 1) 페이징 2) 검색 3) 댓글 갯수 , 버전으로 목록 출력.
     PageResponseDTO<BoardListReplyCountDTO> listWithReplyCount(PageRequestDTO pageRequestDTO);
+
+    // 기존 , 1) 페이징 2) 검색 3) 댓글 갯수 , 버전으로 목록 출력. 4) 첨부 이미지들
+    PageResponseDTO<BoardListAllDTO> listWithAll(PageRequestDTO pageRequestDTO);
 
 }

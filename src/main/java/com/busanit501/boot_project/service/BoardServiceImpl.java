@@ -2,15 +2,13 @@ package com.busanit501.boot_project.service;
 
 
 import com.busanit501.boot_project.domain.Board;
-import com.busanit501.boot_project.dto.BoardDTO;
-import com.busanit501.boot_project.dto.BoardListReplyCountDTO;
-import com.busanit501.boot_project.dto.PageRequestDTO;
-import com.busanit501.boot_project.dto.PageResponseDTO;
+import com.busanit501.boot_project.dto.*;
 import com.busanit501.boot_project.repository.BoardRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -46,10 +44,10 @@ public class BoardServiceImpl implements BoardService{
         // 다른 누군가 만들어 둔 기능을 이용하기.
         // 외주 주기.->boardRepository
         // 패턴 고정, findById -> 받을 때, Optional 받기
-     Optional<Board> result = boardRepository.findById(bno);
-     Board board = result.orElseThrow();
-     // 엔티티 클래스 타입(VO) -> DTO 타입 변환.
-     BoardDTO boardDTO = modelMapper.map(board, BoardDTO.class);
+        Optional<Board> result = boardRepository.findById(bno);
+        Board board = result.orElseThrow();
+        // 엔티티 클래스 타입(VO) -> DTO 타입 변환.
+        BoardDTO boardDTO = modelMapper.map(board, BoardDTO.class);
         return boardDTO;
     }
 
@@ -130,5 +128,12 @@ public class BoardServiceImpl implements BoardService{
                 .dtoList(result.getContent())
                 .total((int)result.getTotalElements())
                 .build();
+    }
+
+    // 기존 , 1) 페이징 2) 검색 3) 댓글 갯수 , 버전으로 목록 출력. 4) 첨부 이미지들
+    // 참고로 위에는 1) ~ 3) 구현이 된 상태임. 4) 번만 추가
+    @Override
+    public PageResponseDTO<BoardListAllDTO> listWithAll(PageRequestDTO pageRequestDTO) {
+        return null;
     }
 }
